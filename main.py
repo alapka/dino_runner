@@ -39,9 +39,20 @@ def main():
     run = True
 
     while run:
+        keys = pygame.key.get_pressed()
+
+        if keys[pygame.K_DOWN]:
+            dinosaur.duck()
+        else:
+            if dinosaur.ducking:
+                dinosaur.unduck()
+
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 run = False
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_SPACE:
+                    dinosaur.jump()
         draw_window()
         game_speed += 0.0025
         clock.tick(FPS)

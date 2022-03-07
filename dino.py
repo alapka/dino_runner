@@ -12,8 +12,8 @@ class Dino(pygame.sprite.Sprite):
         self.running_sprites.append(pygame.transform.scale(pygame.image.load("assets/Dino1.png"), (60, 80)))
         self.running_sprites.append(pygame.transform.scale(pygame.image.load("assets/Dino2.png"), (60, 80)))
 
-        self.ducking_sprites.append(pygame.transform.scale(pygame.image.load("assets/DinoDucking1.png"), (60, 80)))
-        self.ducking_sprites.append(pygame.transform.scale(pygame.image.load("assets/DinoDucking2.png"), (60, 80)))
+        self.ducking_sprites.append(pygame.transform.scale(pygame.image.load("assets/DinoDucking1.png"), (90, 40)))
+        self.ducking_sprites.append(pygame.transform.scale(pygame.image.load("assets/DinoDucking2.png"), (90, 40)))
         
 
         self.current_image_index = 0
@@ -28,17 +28,23 @@ class Dino(pygame.sprite.Sprite):
         self.ducking = False
 
     def update(self):
+        self.apply_gravity()
+
         if self.ticks_elapsed <  self.FRAME_RATE:
             self.ticks_elapsed += 1
             return
         self.animate()
+        
         self.ticks_elapsed = 0
 
     def animate(self):
         self.current_image_index += 1
         if self.current_image_index > 1:
             self.current_image_index = 0
-        self.image = self.running_sprites[self.current_image_index]
+        if self.ducking:
+            self.image = self.ducking_sprites[self.current_image_index]
+        else:
+            self.image = self.running_sprites[self.current_image_index]
 
     def duck(self):
         self.ducking = True
@@ -46,4 +52,13 @@ class Dino(pygame.sprite.Sprite):
     
     def unduck(self):
         self.ducking = False
-        self.rect.center = 360
+        self.rect.centery = 360
+
+    def apply_gravity(self):
+        if self.rect.centery <= 360:
+            self.rect.centery += self.gravity
+    
+    def jump(self):
+        if self.rect.centery >= 360:
+            while self.rect.centery - self.velocity > 40:
+                self.rect.centery -= 1
